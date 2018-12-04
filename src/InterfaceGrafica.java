@@ -2,6 +2,7 @@
 import com.sun.javafx.scene.control.skin.LabeledText;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,20 +31,29 @@ public class InterfaceGrafica extends Application{
     Button cadastrar = new Button("Cadastrar"),
             limpar = new Button("Limpar"),
             pesquisar = new Button("Pesquisar"),
-            salvar = new Button("Salvar agenda"),
-            abrir = new Button("Abrir agenda"),
-            apagarAgenda = new Button("Apagar agenda"),
-            apagarContato = new Button("Apagar selecionado");
+            salvarAgenda = new Button("Salvar"),
+            abrirAgenda = new Button("Abrir"),
+            apagarAgenda = new Button("Apagar"),
+            apagarSelecao = new Button("Apagar"),
+            dadosSelecao = new Button("Informações"),
+            niverDoMes = new Button("Mes"),
+            niverDaSemana = new Button("Semana"),
+            niverDoDia = new Button("Dia"),
+            mostrarAgenda = new Button("Mostrar"),
+            alterarSelecao = new Button("Alterar");
     TextField dia = new TextField("25");
     FileChooser dialogoDeArquivo = new FileChooser();
     TextField email = new TextField("contatoEx@servidorEx.com");
-    Label labelEmail = new Label("E-mail:");
-    Label labelNascimento = new Label("Data de nascimento:");
-    Label labelNome = new Label("Nome:");
-    Label labelTelefone_1 = new Label("Telefone 1:");
-    Label labelTelefone_2 = new Label("Telefone 2:");
-    Label mensagem1 = new Label("Depois de preecher os campos acima clique em cadastrar");
-    Label mensagem2 = new Label("");
+    Label labelEmail = new Label("E-mail:"),
+            labelNascimento = new Label("Data de nascimento:"),labelNome = new Label("Nome:"),
+            labelTelefone_1 = new Label("Telefone 1:"),
+            labelTelefone_2 = new Label("Telefone 2:"),
+            mensagem1 = new Label("Depois de preecher os campos acima clique em cadastrar"),
+            mensagem2 = new Label("Acima você vê a agenda atual."),
+            labelDataReferencia = new Label("Data de referência"),
+            labelBotoesPesquisa = new Label("Aniversariantes do(a)"),
+            labelBotoesContato = new Label("Seleção"),
+            labelBotoesAgenda = new Label("Agenda");
     TextField mes = new TextField("07");
     TextField nome = new TextField("Contato Exemplo Para Clicar em Cadastrar e Depois Pesquisar");
     TextField pesquisa = new TextField("Contato Exemplo Para Clicar em Cadastrar e Depois Pesquisar");
@@ -61,13 +71,15 @@ public class InterfaceGrafica extends Application{
             painelPesquisa = new FlowPane(pesquisa, pesquisar),
             painelBotoes = new FlowPane(cadastrar, limpar),
             painelBuscaAniversario = new FlowPane(buscaDia, buscaMes, buscaAno),
-            painelContatos = new FlowPane(apagarContato),
-            painelAgenda = new FlowPane(salvar, abrir, apagarAgenda);
+            painelBotoesBusca = new FlowPane( niverDoMes, niverDaSemana, niverDoDia),
+            painelContatos = new FlowPane(apagarSelecao, dadosSelecao, alterarSelecao),
+            painelAgenda = new FlowPane(mostrarAgenda, salvarAgenda, abrirAgenda, apagarAgenda);
 
     @Override
     public void start(Stage palco){
         // Configurações
         mensagem1.setStyle("-fx-text-fill: orange;");
+        mensagem2.setStyle("-fx-text-fill: blue;");
         dialogoDeArquivo.setTitle("Localização a salvar...");
         dialogoDeArquivo.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Arquivo xml", "*.xml"),
@@ -82,7 +94,9 @@ public class InterfaceGrafica extends Application{
         painelPesquisa.setHgap(5);
         painelNascimento.setHgap(5);
         painelAgenda.setHgap(5);
+        painelContatos.setHgap(5);
         painelBuscaAniversario.setHgap(5);
+        painelBotoesBusca.setHgap(5);
         nome.setPrefWidth(350);
         dia.setMaxWidth(30);
         mes.setMaxWidth(30);
@@ -98,7 +112,7 @@ public class InterfaceGrafica extends Application{
         mensagem2.setPadding(new Insets(20, 20, 20, 20));
         separador1.setPadding(new Insets(20, 20, 20, 20));
         separador2.setPadding(new Insets(20, 20, 20, 20));
-        listaDeContatos.setPrefHeight(200);
+        listaDeContatos.setPrefHeight(100);
 
         // Inclusões na janela
         quadro.add(labelNome, 0, 0);
@@ -115,12 +129,17 @@ public class InterfaceGrafica extends Application{
         quadro.add(painelBotoes, 1, 6);
         quadro.add(separador1, 0, 8, 2, 1);
         quadro.add(painelPesquisa, 1, 9);
+        quadro.add(labelDataReferencia, 0, 10);
         quadro.add(painelBuscaAniversario, 1, 10);
-        quadro.add(separador2, 0, 11, 2, 1);
-        quadro.add(painelContatos, 1, 12);
-        quadro.add(listaDeContatos, 1, 13);
-        quadro.add(painelAgenda, 1, 14);
-        quadro.add(mensagem2, 1, 15);
+        quadro.add(labelBotoesPesquisa, 0, 11);
+        quadro.add(labelBotoesContato, 0,13);
+        quadro.add(painelBotoesBusca, 1, 11);
+        quadro.add(separador2, 0, 12, 2, 1);
+        quadro.add(painelContatos, 1, 13);
+        quadro.add(listaDeContatos, 1, 14);
+        quadro.add(labelBotoesAgenda, 0, 15);
+        quadro.add(painelAgenda, 1, 15);
+        quadro.add(mensagem2, 1, 16);
         listaDeContatos.setItems(FXCollections.observableArrayList(agenda.contatos()));
         palco.setScene(new Scene(quadro));
         palco.setTitle("Agenda");
@@ -129,6 +148,7 @@ public class InterfaceGrafica extends Application{
 
         // Configuração de botões
         cadastrar.setOnAction(e -> {
+            nome.setEditable(true);
             try{
                 String auxNome = nome.getText();
                 String auxTelefone_1 = telefone_1.getText();
@@ -147,7 +167,7 @@ public class InterfaceGrafica extends Application{
             }
         });
 
-        salvar.setOnAction(e -> {
+        salvarAgenda.setOnAction(e -> {
             try{
                 File enderecoDoArquivo = dialogoDeArquivo.showSaveDialog(palco);
                 if (enderecoDoArquivo.getPath().contains(".javabeans")){
@@ -166,7 +186,7 @@ public class InterfaceGrafica extends Application{
             }
         });
 
-        abrir.setOnAction(e -> {
+        abrirAgenda.setOnAction(e -> {
             try{
                 File enderecoDoArquivo = dialogoDeArquivo.showOpenDialog(palco);
                 if (enderecoDoArquivo.getPath().contains(".javabeans")){
@@ -246,7 +266,7 @@ public class InterfaceGrafica extends Application{
             }
         });
 
-        apagarContato.setOnAction(e -> {
+        apagarSelecao.setOnAction(e -> {
             String aux = listaDeContatos.getSelectionModel().getSelectedItem();
             if (aux != null){
                 agenda.exclui(aux);
@@ -258,5 +278,78 @@ public class InterfaceGrafica extends Application{
                 mensagem2.setText("O contato não foi apagado.");
             }
         });
+        
+        dadosSelecao.setOnAction( evento -> {
+            Contato contatoAux = agenda.busca(listaDeContatos.getSelectionModel().getSelectedItem());
+                if (contatoAux == null){
+                    mensagem1.setStyle("-fx-text-fill: red;");
+                    mensagem1.setText("Não há um contato com esse nome");
+                } else {
+                    Alert alerta = new Alert(AlertType.INFORMATION);
+                    alerta.setTitle("Busca");
+                    alerta.setHeaderText("Resultado da busca");
+                    alerta.setContentText("Nome: " + contatoAux.getNome()
+                            + "\nTelefone 1: " + contatoAux.getTelefone_1()
+                            + "\nTelefone 2: " + contatoAux.getTelefone_2()
+                            + "\nE-mail: " + contatoAux.getEmail()
+                            + "\nData de nascimento: " + contatoAux.getAniversario()
+                    );
+                    alerta.show();
+                }
+        });
+        
+        niverDoMes.setOnAction( e -> {
+            Integer auxMes = Integer.parseInt(buscaMes.getText());
+            ArrayList<Map.Entry<String, Contato>> filtrado = agenda.aniversariantesDoMes(auxMes);
+            ArrayList<String> nomes = new ArrayList<>();
+            filtrado.forEach( entrada -> nomes.add(entrada.getKey()));
+            listaDeContatos.setItems(FXCollections.observableArrayList(nomes));
+            mensagem2.setStyle("-fx-text-fill: orange;");
+            mensagem2.setText("Agora você só vê uma parte dos dados. Para ver todos clique em 'Agenda'");
+        });
+        niverDaSemana.setOnAction( e -> {
+            Integer auxDia = Integer.parseInt(buscaDia.getText());
+            Integer auxMes = Integer.parseInt(buscaMes.getText());
+            Integer auxAno = Integer.parseInt(buscaAno.getText());
+            ArrayList<Map.Entry<String, Contato>> filtrado = agenda.aniversariantesDaSemana(auxDia, auxMes, auxAno);
+            ArrayList<String> nomes = new ArrayList<>();
+            filtrado.forEach( entrada -> nomes.add(entrada.getKey()));
+            listaDeContatos.setItems(FXCollections.observableArrayList(nomes));
+            mensagem2.setStyle("-fx-text-fill: orange;");
+            mensagem2.setText("Agora você só vê uma parte dos dados. Para ver todos clique em 'Agenda'");
+        });
+        niverDoDia.setOnAction( e -> {
+            Integer auxDia = Integer.parseInt(buscaDia.getText());
+            Integer auxMes = Integer.parseInt(buscaMes.getText());
+            ArrayList<Map.Entry<String, Contato>> filtrado = agenda.aniversariantesDoDia(auxDia , auxMes);
+            ArrayList<String> nomes = new ArrayList<>();
+            filtrado.forEach( entrada -> nomes.add(entrada.getKey()));
+            listaDeContatos.setItems(FXCollections.observableArrayList(nomes));
+            mensagem2.setStyle("-fx-text-fill: orange;");
+            mensagem2.setText("Agora você só vê uma parte dos dados. Para ver todos clique em 'Agenda'");
+        });
+        
+        mostrarAgenda.setOnAction( evento -> {
+            listaDeContatos.setItems(FXCollections.observableArrayList(agenda.contatos()));
+            mensagem2.setStyle("-fx-text-fill: blue;");
+            mensagem2.setText("Todos os contatos estão sendo exibidos.");
+        });
+        
+        alterarSelecao.setOnAction( e -> {
+           Contato contatoAux = agenda.busca(listaDeContatos.getSelectionModel().getSelectedItem());
+           nome.setText(contatoAux.getNome());
+           telefone_1.setText(contatoAux.getTelefone_1());
+           telefone_2.setText(contatoAux.getTelefone_2());
+           email.setText(contatoAux.getEmail());
+           dia.setText(""+contatoAux.getDia());
+           mes.setText(""+contatoAux.getMes());
+           ano.setText(""+contatoAux.getAno());
+           nome.setEditable(false);
+           mensagem1.setStyle("-fx-text-fill: blue;");
+           mensagem1.setText("Altere o contato e o cadastre. Editar o nome é impossível enquanto isso");
+           mensagem2.setStyle("-fx-text-fill: blue;");
+           mensagem2.setText("Altere o contato e o cadastre. Editar o nome é impossível enquanto isso");
+        });
+        
     }
 }

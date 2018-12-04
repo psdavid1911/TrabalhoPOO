@@ -6,10 +6,14 @@ import java.util.TreeMap;
 public class Agenda extends TreeMap<String, Contato>{
 
     { // Exemplos embutidos
+        cadastrar("Contaxt", "78151384862", "87942318486", "umUsuario@servidorExemplo.com", 20, 05, 1990);
+        cadastrar("Strauto", "85152345238", "87921681245", "maria@servidor.com", 16, 11, 1982);
+        cadastrar("Celex", "78921525456", "32168468798", "josenildeta@outroservidor.com", 19, 11, 1850);
+        cadastrar("Jacinta Bela de Deus (só pode mesmo)", "88445898751", "87512313861", "jacinta@maisumservidor.com", 01, 8, 2000);
         cadastrar("Exemplo De Um Contato Qualquer", "78151384862", "87942318486", "umUsuario@servidorExemplo.com", 20, 05, 1990);
-        cadastrar("Contato Com Nome Tão Feio Que Foi Sensurado", "85152345238", "87921681245", "maria@servidor.com", 19, 11, 1982);
+        cadastrar("Contato Com Nome Tão Feio Que Foi Sensurado", "85152345238", "87921681245", "maria@servidor.com", 16, 11, 1982);
         cadastrar("Josenildete Neta de Jacintatete", "78921525456", "32168468798", "josenildeta@outroservidor.com", 19, 11, 1850);
-        cadastrar("Jacinta Bela de Deus (só pode mesmo)", "88445898751", "87512313861", "jacinta@maisumservidor.com", 19, 11, 2000);
+        cadastrar("Jacinta Bela de Deus (só pode mesmo)", "88445898751", "87512313861", "jacinta@maisumservidor.com", 01, 8, 2000);
     }
 
     public void cadastrar(String nome, String telefone_1, String telefone_2, String email, int dia, int mes, int ano){
@@ -45,9 +49,9 @@ public class Agenda extends TreeMap<String, Contato>{
         return nomes;
     }
 
-    public ArrayList<Entry<String, Contato>> aniversariantesDoMes(int mes, int ano){
+    public ArrayList<Entry<String, Contato>> aniversariantesDoMes(int mes){
         ArrayList<Entry<String, Contato>> entradas = new ArrayList<>();
-        entrySet().stream().filter(entrada -> entrada.getValue().getAniversario().mes() == mes && entrada.getValue().getAniversario().ano() == ano).forEach(entrada -> entradas.add(entrada));
+        entrySet().stream().filter(entrada -> entrada.getValue().getAniversario().mes() == mes).forEach(entrada -> entradas.add(entrada));
         return entradas;
     }
 
